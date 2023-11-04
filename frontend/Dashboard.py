@@ -5,8 +5,12 @@ import plotly.express as px
 import googlemaps
 
 
-st.title('Gas Leak Detector')
 
+APIKey = "AIzaSyAh49B0BiaXa_F61OL9aY8rrK1Vq8F89DM"
+
+
+
+st.title('Gas Leak Detector')
 
 
 # Set the theme using the st.config object
@@ -50,4 +54,6 @@ with location_leak:
 
 
 with spread_leak:
+ 
+
   pass

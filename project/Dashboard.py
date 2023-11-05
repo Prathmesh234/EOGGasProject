@@ -3,8 +3,7 @@ import pandas as pd
 import numpy as np
 import plotly.express as px
 import googlemaps
-from environs import Env
-import gmaps
+
 import pandas as pd
 import numpy as np
 import folium
@@ -34,7 +33,8 @@ def prompt_file_upload_weather():
     uploaded_file = st.file_uploader("Upload a CSV file:", type=["csv"], key="weather")
     
     if uploaded_file is not None:
-        with open(os.path.join("/Users/prathmeshbhatt/Desktop/eogProject/project/", uploaded_file.name), "wb") as f:
+        project_dir = os.path.dirname(__file__)
+        with open(os.path.join(project_dir, uploaded_file.name), "wb") as f:
             f.write(uploaded_file.read())
            
 
@@ -49,8 +49,10 @@ def prompt_file_upload_sensor():
     """Upload the sensor data csv file"""
     uploaded_file = st.file_uploader("Upload a CSV file:", type=["csv"], key="sensor")
     
+
     if uploaded_file is not None:
-        with open(os.path.join("/Users/prathmeshbhatt/Desktop/eogProject/project/", uploaded_file.name), "wb") as f:
+        project_dir = os.path.dirname(__file__)
+        with open(os.path.join(project_dir, uploaded_file.name), "wb") as f:
             f.write(uploaded_file.read())
         main_executor()
 
@@ -63,7 +65,9 @@ prompt_file_upload_sensor()
 st.markdown("* Please wait for the files to compile")
 
 with st.spinner("Please wait while the sensor data is being prepared..."):
-    while not os.path.exists("/Users/prathmeshbhatt/Desktop/eogProject/project/sensor_readings.csv"):
+    project_dir = os.path.dirname(__file__)
+
+    while not os.path.exists(project_dir + "/sensor_readings.csv"):
         time.sleep(1)
 st.success("Data found!, please be patient...")
 
@@ -81,7 +85,9 @@ data_string = df.to_csv(index=False)
 data_bytes = data_string.encode('utf-8')
 st.download_button(label="Download CSV", data=data_bytes, file_name="results.csv")
 with st.spinner("Please wait while the result.csv file is being prepared..."):
-    while not os.path.exists("/Users/prathmeshbhatt/Desktop/eogProject/project/results.csv"):
+    project_dir = os.path.dirname(__file__)
+
+    while not os.path.exists(project_dir + "/results.csv"):
         time.sleep(5)
 st.success("Results.csv is ready!!")
 
@@ -133,7 +139,9 @@ with location_leak:
 
     # Save the map as an HTML file
     map_obj.save('map.html')
-    path_to_html2 = "/Users/prathmeshbhatt/Desktop/eogProject/project/map.html"
+    project_dir = os.path.dirname(__file__)
+
+    path_to_html2 = project_dir + "/map.html"
     html_template = """
         <iframe src="{path_to_html2}" width="100%" height="600"></iframe>
     """
@@ -151,7 +159,9 @@ with spread_leak:
  html_template = """
     <iframe src="{path_to_html}" width="100%" height="600"></iframe>
   """
- path_to_html = "/Users/prathmeshbhatt/Desktop/eogProject/project/satelliteMap.html" 
+ project_dir = os.path.dirname(__file__)
+
+ path_to_html = project_dir + "/satelliteMap.html" 
  
  with open(path_to_html,'r') as f: 
      html_data = f.read()

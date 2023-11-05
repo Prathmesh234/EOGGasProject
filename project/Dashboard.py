@@ -95,6 +95,23 @@ sensor_locations, location_leak, spread_leak, anomaly_detection = st.tabs(
     ["Sensor Locations", "Leak Locations", "Spread Leak", "Anomaly Detection"]
 )
 
+with sensor_locations:
+    
+    
+ project_dir = os.path.dirname(__file__)
+
+ path_to_html3 = project_dir + "/SensorMap.html" 
+ 
+ with open(path_to_html3,'r') as f: 
+     html_data = f.read()
+ html_template = """
+    <iframe src="{path_to_html3}" width="100%" height="600"></iframe>
+  """
+## Show in webpage
+ st.header("Sensor Map")
+ st.components.v1.html(html_data,height=900)
+
+
 with location_leak:
   
   t = st.time_input('Input time of the day in hh:mm format example 00:30', value=None)

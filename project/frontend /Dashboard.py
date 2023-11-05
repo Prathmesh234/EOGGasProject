@@ -9,7 +9,8 @@ import pandas as pd
 import numpy as np
 import folium
 import webbrowser
-
+import os
+import shutil
 
 import folium
 from folium.plugins import HeatMap
@@ -32,13 +33,17 @@ def prompt_file_upload():
   """Upload the sensor data csv file"""
   uploaded_file = st.file_uploader("Upload a CSV file:", type=["csv"])
   if uploaded_file is not None:
+    with open(os.path.join("eogProject/project/frontend", uploaded_file.name), "wb") as f:
+      f.write(uploaded_file.read())
+
     return uploaded_file
   else:
     st.error("Please upload a CSV file.")
 
 
-# Get the uploaded file
 
+# Get the uploaded file
+prompt_file_upload()
 
 
 
@@ -58,7 +63,7 @@ with spread_leak:
  html_template = """
     <iframe src="{path_to_html}" width="100%" height="600"></iframe>
   """
- path_to_html = "/Users/prathmeshbhatt/Desktop/eogProject/backend/frontend 00-46-34-789/satelliteMap.html" 
+ path_to_html = "/Users/prathmeshbhatt/Desktop/eogProject/project/frontend /satelliteMap.html" 
  
  with open(path_to_html,'r') as f: 
      html_data = f.read()

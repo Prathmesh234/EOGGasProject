@@ -48,8 +48,8 @@ def populate_Y_data(readings):
         for v in intervals:
             readings.loc[(readings["time"] >= v[0]) & (readings["time"] <= v[1]), "Y_" + id] = 1
 
-def get_weather_data():
-    weather_data = pd.read_csv("weather_data.csv")
+def get_weather_data(filename = "weather_data_train.csv"):
+    weather_data = pd.read_csv(filename)
     weather_data.drop(columns=["timestamp"], inplace = True)
     # weather_data = weather_data[:len(readings)]
     return weather_data
@@ -91,37 +91,40 @@ def train_EOG(readings):
     return models
 
 def train_historic():
-    readings = process("sensor_readings.csv")
+    
+    readings = process("sensor_readings_train.csv")
+    print(readings.head())
     return train_EOG(readings)
 
-models = train_historic()
-test_readings = process("sensor_readings.csv") # To be replaced with the input file path
+def main_executor():
+    models = train_historic()
+    test_readings = process("sensor_readings.csv") # To be replaced with the input file path
 
-result = {}
-result["time"] = test_readings["time"]
-result_df = pd.DataFrame(result)
-test_readings.drop(columns = ["Unnamed: 0", "time"], inplace=True)
-weather_data = get_weather_data()
-weather_data = weather_data[:len(test_readings)]
-X_test = pd.concat([test_readings, weather_data], axis =  1)
-classes = ["4S", "4T", "4W", "5S", "5W"]
-Y_pred = []
-for i, model in enumerate(models):
-    y_pred = model.predict(X_test)
-    Y_pred += [y_pred]
+    result = {}
+    result["time"] = test_readings["time"]
+    result_df = pd.DataFrame(result)
+    test_readings.drop(columns = ["Unnamed: 0", "time"], inplace=True)
+    weather_data = get_weather_data("weather_data.csv")
+    weather_data = weather_data[:len(test_readings)]
+    X_test = pd.concat([test_readings, weather_data], axis =  1)
+    classes = ["4S", "4T", "4W", "5S", "5W"]
+    Y_pred = []
+    for i, model in enumerate(models):
+        y_pred = model.predict(X_test)
+        Y_pred += [y_pred]
 
-Y_pred_df = pd.DataFrame(Y_pred).T
-answer = []
-for i,row in Y_pred_df.iterrows():
-    res = ""
-    for i,y in enumerate(row):
-        if y == 1:
-            if not res:
-                res += classes[i]
-            else:
-                res += "|" + classes[i]
-    if not res:
-        res = "None"
-    answer += [res]
-result_df["location"] = answer
-result_df.to_csv("results.csv")
+    Y_pred_df = pd.DataFrame(Y_pred).T
+    answer = []
+    for i,row in Y_pred_df.iterrows():
+        res = ""
+        for i,y in enumerate(row):
+            if y == 1:
+                if not res:
+                    res += classes[i]
+                else:
+                    res += "|" + classes[i]
+        if not res:
+            res = "None"
+        answer += [res]
+    result_df["location"] = answer
+    result_df.to_csv("results.csv")

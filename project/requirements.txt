@@ -1,0 +1,7 @@
+matplotlib 
+xgboost     
+streamlit
+scikit-learn
+plotly.express   
+folium    
+pandas
